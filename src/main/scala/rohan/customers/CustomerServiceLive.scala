@@ -6,8 +6,9 @@ import zio.ZLayer
 import io.getquill.jdbczio.Quill
 import io.getquill.*
 import java.util.UUID
-import rohan.types.CustomerId
+import rohan.types.*
 import io.getquill.jdbczio.Quill.Postgres
+import neotype.interop.quill.given
 
 case class CustomerServiceLive(quill: Quill.Postgres[SnakeCase]) extends CustomerService:
 
