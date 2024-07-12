@@ -6,6 +6,7 @@ import zio.Task
 import zio.ZLayer
 import rohan.types.CustomerId
 import rohan.customers.Customer
+import neotype.interop.quill.given
 
 final case class AccountServiceLive(quill: Quill.Postgres[SnakeCase])
     extends AccountService:

@@ -6,8 +6,12 @@ import zio.schema.*
 import java.util.UUID
 import zio.json.JsonCodec
 import zio.json.DeriveJsonCodec
+import neotype.*
 
 object types:
+
+  type AccountId = AccountId.Type
+  object AccountId extends Newtype[UUID]
 
 // UserId type as opaque type and some utils for codecs, etc
 // First experience
