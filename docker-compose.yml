@@ -1,0 +1,11 @@
+services:
+  db:
+    container_name: kung-fu-customer-persist
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_USER: test
+    ports:
+      - 25432:5432
