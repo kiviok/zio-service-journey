@@ -5,8 +5,6 @@ import zio.ZIO
 import zio.ZLayer
 import zio.http.*
 import zio.json.*
-import zio.schema.codec.JsonCodec.schemaBasedBinaryCodec
-
 import java.util.UUID
 import rohan.ServerUtils
 

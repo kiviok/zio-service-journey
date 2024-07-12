@@ -8,9 +8,8 @@ import zio.json.JsonCodec
 import zio.json.DeriveJsonCodec
 import zio.*
 import zio.json.JsonEncoder
-import zio.http.Header.Custom
 import zio.json.DeriveJsonEncoder
-import io.getquill.SchemaMeta
+import neotype.interop.ziojson.given
 
 final case class Customer(
     id: CustomerId,
@@ -20,23 +19,17 @@ final case class Customer(
     phone: String,
     email: String,
     passport: Int
-):
-
-  def fullName: String = firstName + " " + lastName
+) derives JsonCodec
 
 object Customer:
-  def make(command: CreateCustomer): UIO[Customer] =
-    CustomerId.random.map(
-      Customer(
-        _,
-        command.firstName,
-        command.lastName,
-        command.address,
-        command.phone,
-        command.email,
-        command.passport
-      )
+  def make(command: CreateCustomer): UIO[Customer] = Random.nextUUID.map(uuid =>
+    Customer(
+      CustomerId.unsafeMake(uuid),
+      command.firstName,
+      command.lastName,
+      command.address,
+      command.phone,
+      command.email,
+      command.passport
     )
-
-  given Schema[Customer]    = DeriveSchema.gen
-  given JsonCodec[Customer] = DeriveJsonCodec.gen
+  )
