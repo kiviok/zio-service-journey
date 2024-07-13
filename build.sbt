@@ -3,7 +3,7 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "ru.rohan"
 ThisBuild / organizationName := "rohan"
 
-val zioVersion        = "2.1.5"
+val zioVersion        = "2.1.6"
 val zioHttpVersion    = "3.0.0-RC9"
 val zioJsonVersion    = "0.7.1"
 val zioSchemaVersion  = "1.2.2"
@@ -16,14 +16,15 @@ lazy val root = (project in file("."))
   .settings(
     name := "kung-fu-trader",
     libraryDependencies ++= List(
-      "dev.zio"              %% "zio"               % zioVersion,
-      "dev.zio"              %% "zio-streams"       % zioVersion,
-      "dev.zio"              %% "zio-http"          % zioHttpVersion,
-      "dev.zio"              %% "zio-json"          % zioJsonVersion,
-      "dev.zio"              %% "zio-schema-json"   % zioSchemaVersion,
-      "io.getquill"          %% "quill-jdbc-zio"    % zioQuillVersion,
-      "org.postgresql"        % "postgresql"        % postgresqlVersion,
-      "org.flywaydb"          % "flyway-core"       % flywayVersion,
+      "dev.zio"       %% "zio"             % zioVersion,
+      "dev.zio"       %% "zio-streams"     % zioVersion,
+      "dev.zio"       %% "zio-http"        % zioHttpVersion,
+      "dev.zio"       %% "zio-json"        % zioJsonVersion,
+      "dev.zio"       %% "zio-schema-json" % zioSchemaVersion,
+      "io.getquill"   %% "quill-jdbc-zio"  % zioQuillVersion,
+      "org.postgresql" % "postgresql"      % postgresqlVersion,
+      // "org.flywaydb"          % "flyway-core"                % flywayVersion,
+      // "org.flywaydb"          % "flyway-database-postgresql" % flywayVersion  % "runtime",
       "io.github.kitlangton" %% "neotype"           % neoTypeVersion,
       "io.github.kitlangton" %% "neotype-zio-json"  % neoTypeVersion,
       "io.github.kitlangton" %% "neotype-zio-quill" % neoTypeVersion,
