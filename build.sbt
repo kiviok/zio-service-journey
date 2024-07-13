@@ -3,7 +3,7 @@ ThisBuild / version          := "0.1.0-SNAPSHOT"
 ThisBuild / organization     := "ru.rohan"
 ThisBuild / organizationName := "rohan"
 
-val zioVersion        = "2.1.5"
+val zioVersion        = "2.1.6"
 val zioHttpVersion    = "3.0.0-RC9"
 val zioJsonVersion    = "0.7.1"
 val zioSchemaVersion  = "1.2.2"
