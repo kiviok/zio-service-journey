@@ -1,20 +1,33 @@
 package rohan
 
 import zio.http.*
-import zio.ZIO
-import zio.ZLayer
+import zio.*
 import customers.CustomerRoutes
 import rohan.accounts.AccountRoutes
 
 final case class ApplicationServer(
     customerRoutes: CustomerRoutes,
-    accountRoutes: AccountRoutes
+    accountRoutes: AccountRoutes,
+    migration: FlywayMigration
 ):
-  val serverRoutes = customerRoutes.all ++ accountRoutes.all
+  private val serverRoutes = customerRoutes.all ++ accountRoutes.all
 
-  def start: ZIO[Any, Throwable, Unit] =
-    Server.serve(serverRoutes).provide(Server.default)
+  def start: Task[Unit] =
+    for
+      _ <- migration.cleanMigrate
+      _ <- Server.serve(serverRoutes).provide(Server.default)
+    yield ()
 
 object ApplicationServer:
-  val layer: ZLayer[CustomerRoutes & AccountRoutes, Nothing, ApplicationServer] =
-    ZLayer.derive[ApplicationServer]
+  val layer: ZLayer[
+    FlywayMigration & AccountRoutes & CustomerRoutes,
+    Nothing,
+    ApplicationServer
+  ] =
+    ZLayer {
+      for
+        cr <- ZIO.service[CustomerRoutes]
+        ar <- ZIO.service[AccountRoutes]
+        m  <- ZIO.service[FlywayMigration]
+      yield ApplicationServer(cr, ar, m)
+    }

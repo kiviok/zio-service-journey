@@ -19,6 +19,7 @@ object MainApp extends ZIOAppDefault:
       AccountRoutes.layer,
       CustomerServiceLive.layer,
       AccountServiceLive.layer,
+      FlywayMigration.layer,
       Quill.Postgres.fromNamingStrategy(SnakeCase),
       Quill.DataSource.fromPrefix("datasource")
     )
