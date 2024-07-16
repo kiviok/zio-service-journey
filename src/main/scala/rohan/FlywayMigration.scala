@@ -1,9 +1,9 @@
 package rohan
 
-import zio.ZIO
+import zio.*
 import org.flywaydb.core.Flyway
+
 import javax.sql.DataSource
-import zio.ZLayer
 
 final case class FlywayMigration(datasource: DataSource):
   private lazy val loadFlyway = ZIO.attempt {
@@ -12,15 +12,15 @@ final case class FlywayMigration(datasource: DataSource):
       .dataSource(datasource)
       .baselineOnMigrate(true)
       .baselineVersion("0")
+      .cleanDisabled(false) // for development
       .load()
   }
 
-  val resetMigrate =
+  val cleanMigrate: Task[Unit] =
     for
       flyway <- loadFlyway
-      _ <- ZIO.attempt(flyway.clean())
-      _ <- ZIO.attempt(flyway.migrate())
-
+      _      <- ZIO.attempt(flyway.clean())
+      _      <- ZIO.attempt(flyway.migrate())
     yield ()
 
 object FlywayMigration:

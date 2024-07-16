@@ -21,9 +21,9 @@ final case class CustomerRoutes(customers: CustomerService):
         for
           cu <- ServerUtils.parseBody[CreateCustomer](req)
           id <- customers.create(cu)
-        yield Response.text(id.toString())
+        yield Response.text(id.toString)
       }
-  ).handleError(e => Response.internalServerError(e.toString()))
+  ).handleError(e => Response.internalServerError(e.toString))
 
 object CustomerRoutes:
   val layer = ZLayer.fromFunction(CustomerRoutes.apply)
