@@ -11,17 +11,26 @@ import rohan.ServerUtils
 final case class AccountRoutes(accountService: AccountService):
 
   val all = Routes(
-    Method.GET / "customer" / uuid("customerId") / "accounts" -> handler {
+    // Get all accounts for given customerId
+    Method.GET / "customers" / uuid("customerId") / "accounts" -> handler {
       (customerId: UUID, _: Request) =>
-        for acc <- accountService.getAccountsForCustomer(CustomerId(customerId))
+        for acc <- accountService.getAllByCustomerId(CustomerId(customerId))
         yield Response.json(acc.toJson)
 
     },
-    Method.POST / "customer" / "account" / "open" -> handler { (req: Request) =>
+    Method.POST / "accounts" -> handler { (req: Request) =>
       for
-        oc <- ServerUtils.parseBody[AccountOpen](req)
-        id <- accountService.open(oc)
+        oc <- ServerUtils.parseBody[AccountCreate](req)
+        id <- accountService.create(oc)
       yield Response.text(id.toString())
+    },
+    Method.PATCH / "accounts" -> handler { (req: Request) =>
+      for
+        au <- ServerUtils.parseBody[AccountUpdate](req)
+        _ <- accountService.update(
+          au
+        ) // TODO add logs and quill exception handlers  -- .catchAll(c => zio.Console.printLine(c))
+      yield Response.ok
     }
   ).handleError(e => Response.internalServerError(e.toString()))
 

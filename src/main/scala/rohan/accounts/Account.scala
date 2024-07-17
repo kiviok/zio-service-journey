@@ -18,7 +18,7 @@ final case class Account(
 ) derives JsonCodec
 
 object Account:
-  def make(command: AccountOpen): UIO[Account] = Random.nextUUID.map(uuid =>
+  def make(command: AccountCreate): UIO[Account] = Random.nextUUID.map(uuid =>
     Account(
       AccountId.unsafeMake(uuid),
       command.accountType,
