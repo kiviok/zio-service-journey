@@ -11,6 +11,7 @@ val zioQuillVersion   = "4.8.4"
 val postgresqlVersion = "42.7.3"
 val flywayVersion     = "10.15.2"
 val neoTypeVersion    = "0.3.0"
+val zioConfigVersion  = "4.0.2"
 
 lazy val root = (project in file("."))
   .settings(
@@ -28,6 +29,9 @@ lazy val root = (project in file("."))
       "io.github.kitlangton" %% "neotype"                    % neoTypeVersion,
       "io.github.kitlangton" %% "neotype-zio-json"           % neoTypeVersion,
       "io.github.kitlangton" %% "neotype-zio-quill"          % neoTypeVersion,
+      "dev.zio"              %% "zio-config"                 % zioConfigVersion,
+      "dev.zio"              %% "zio-config-magnolia"        % zioConfigVersion,
+      "dev.zio"              %% "zio-config-typesafe"        % zioConfigVersion,
       "dev.zio"              %% "zio-test"                   % zioVersion     % Test,
       "dev.zio"              %% "zio-test-sbt"               % zioVersion     % Test,
       "dev.zio"              %% "zio-test-magnolia"          % zioVersion     % Test,
