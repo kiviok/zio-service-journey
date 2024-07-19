@@ -13,13 +13,25 @@ import io.getquill.jdbczio.Quill
 import io.getquill.SnakeCase
 import rohan.accounts.AccountServiceLive
 import rohan.accounts.AccountUpdate
+import rohan.customers.CreateCustomer
 
 object AccountServiceSpec extends ZIOSpecDefault:
   override def spec: Spec[TestEnvironment & Scope, Any] =
+
+    val cc = CreateCustomer(
+      firstName = "John",
+      lastName = "Doe",
+      address = "Barsum pl.",
+      email = "joii@uo.uo",
+      phone = "+23222",
+      passport = 121212
+    )
+
     suite("AccountService tests suite")(
       test("return true if create account and find it")(
         for
-          customer <- CustomerService.getByPassport(32341342)
+          _        <- CustomerService.create(cc)
+          customer <- CustomerService.getByPassport(cc.passport)
           account <- AccountService.create(
             AccountCreate(customer.get.id, AccountType.Fond)
           )
@@ -34,6 +46,13 @@ object AccountServiceSpec extends ZIOSpecDefault:
           )
           updated <- AccountService.getById(accounts.head.id)
         yield assertTrue(updated.get.accountType == AccountType.Forts)
+      ),
+      test("return true if delete account successfully")(
+        for
+          list        <- AccountService.getAll
+          _           <- AccountService.delete(list.head.id)
+          listWithout <- AccountService.getAll
+        yield assertTrue(listWithout.contains(list.head) == false)
       )
     ).provide(
       CustomerServiceLive.layer,
@@ -41,4 +60,4 @@ object AccountServiceSpec extends ZIOSpecDefault:
       Quill.Postgres.fromNamingStrategy(SnakeCase),
       Quill.DataSource.fromPrefix("datasource")
     )
-      @@ TestAspect.withLiveRandom
+      @@ TestAspect.withLiveRandom @@ TestAspect.sequential
