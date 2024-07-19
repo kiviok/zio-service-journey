@@ -9,8 +9,8 @@ trait AccountService:
   def getById(id: AccountId): Task[Option[Account]]
   def getAllByCustomerId(c: CustomerId): Task[List[Account]]
   def getAll: Task[List[Account]]
-  def delete(id: AccountId): Task[AccountId]
   def update(au: AccountUpdate): Task[Unit]
+  def delete(id: AccountId): Task[AccountId]
 
 object AccountService:
   def create(op: AccountCreate): ZIO[AccountService, Throwable, Account] =
@@ -29,3 +29,6 @@ object AccountService:
 
   def update(au: AccountUpdate): ZIO[AccountService, Throwable, Unit] =
     ZIO.serviceWithZIO[AccountService](_.update(au))
+
+  def delete(id: AccountId): ZIO[AccountService, Throwable, AccountId] =
+    ZIO.serviceWithZIO[AccountService](_.delete(id))

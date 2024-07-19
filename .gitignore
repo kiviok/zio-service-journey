@@ -7,4 +7,5 @@ target
 .vscode
 metals.sbt
 
+*.session.sql
 .DS_Store

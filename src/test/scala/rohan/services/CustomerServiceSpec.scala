@@ -27,9 +27,7 @@ object CustomerServiceSpec extends ZIOSpecDefault:
         yield assertTrue(inserted.get.firstName == cc.firstName)
       },
       test("return true if find customer by passport")(
-        for
-          _                  <- CustomerService.create(cc)
-          customerByPassport <- CustomerService.getByPassport(cc.passport)
+        for customerByPassport <- CustomerService.getByPassport(cc.passport)
         yield assertTrue(customerByPassport.get.passport == cc.passport)
       ),
       test("return true if getAll customers wokrs")(
@@ -55,14 +53,14 @@ object CustomerServiceSpec extends ZIOSpecDefault:
       ),
       test("return true if delete customer")(
         for
-          list        <- CustomerService.getAll
-          _           <- CustomerService.delete(list.head.id)
-          listWithout <- CustomerService.getAll
-        yield assertTrue(listWithout.contains(list.head) == false)
+          testCustomer <- CustomerService.getByPassport(cc.passport)
+          _            <- CustomerService.delete(testCustomer.get.id)
+          listWithout  <- CustomerService.getAll
+        yield assertTrue(listWithout.contains(testCustomer.get) == false)
       )
     ).provide(
       CustomerServiceLive.layer,
       Quill.Postgres.fromNamingStrategy(SnakeCase),
       Quill.DataSource.fromPrefix("datasource")
     )
-      @@ TestAspect.withLiveRandom
+      @@ TestAspect.withLiveRandom @@ TestAspect.sequential

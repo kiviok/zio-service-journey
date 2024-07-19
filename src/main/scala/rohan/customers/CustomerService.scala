@@ -11,7 +11,7 @@ trait CustomerService:
   def getById(id: CustomerId): Task[Option[Customer]]
   def getAll: Task[List[Customer]]
   def update(uc: UpdateCustomer): Task[Unit]
-  def delete(id: CustomerId): Task[Unit]
+  def delete(id: CustomerId): Task[CustomerId]
 
 object CustomerService:
   def create(command: CreateCustomer): ZIO[CustomerService, Throwable, CustomerId] =
@@ -29,5 +29,5 @@ object CustomerService:
   def update(uc: UpdateCustomer): ZIO[CustomerService, Throwable, Unit] =
     ZIO.serviceWithZIO[CustomerService](_.update(uc))
 
-  def delete(id: CustomerId): ZIO[CustomerService, Throwable, Unit] =
+  def delete(id: CustomerId): ZIO[CustomerService, Throwable, CustomerId] =
     ZIO.serviceWithZIO[CustomerService](_.delete(id))

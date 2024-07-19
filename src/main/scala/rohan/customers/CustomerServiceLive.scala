@@ -31,8 +31,8 @@ case class CustomerServiceLive(quill: Quill.Postgres[SnakeCase]) extends Custome
 
   override def getAll: Task[List[Customer]] = run(query[Customer])
 
-  override def delete(id: CustomerId): Task[Unit] =
-    run(query[Customer].filter(_.id == lift(id)).delete).unit
+  override def delete(id: CustomerId): Task[CustomerId] =
+    run(query[Customer].filter(_.id == lift(id)).delete.returning(_.id))
 
   override def update(uc: UpdateCustomer) = run(
     dynamicQuerySchema[Customer]("customers")
