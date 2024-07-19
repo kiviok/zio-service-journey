@@ -29,6 +29,8 @@ case class CustomerServiceLive(quill: Quill.Postgres[SnakeCase]) extends Custome
   override def getById(id: CustomerId): Task[Option[Customer]] =
     run(query[Customer].filter(_.id == lift(id))).map(_.headOption)
 
+  override def getAll: Task[List[Customer]] = run(query[Customer])
+
   override def delete(id: CustomerId): Task[Unit] =
     run(query[Customer].filter(_.id == lift(id)).delete).unit
 
