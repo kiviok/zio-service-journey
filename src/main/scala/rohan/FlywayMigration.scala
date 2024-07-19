@@ -25,3 +25,6 @@ final case class FlywayMigration(datasource: DataSource):
 
 object FlywayMigration:
   val layer = ZLayer.fromFunction(FlywayMigration(_))
+
+  def cleanMigrate: ZIO[FlywayMigration, Throwable, Unit] =
+    ZIO.serviceWithZIO[FlywayMigration](_.cleanMigrate)

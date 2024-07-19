@@ -11,12 +11,3 @@ trait AccountService:
   def getAll: Task[List[Account]]
   def delete(id: AccountId): Task[AccountId]
   def update(au: AccountUpdate): Task[Unit]
-
-object AccountService:
-  def open(op: AccountCreate): ZIO[AccountService, Nothing, Task[Account]] =
-    ZIO.serviceWith[AccountService](_.create(op))
-
-  def getAllByCustomerId(
-      c: CustomerId
-  ): ZIO[AccountService, Nothing, Task[List[Account]]] =
-    ZIO.serviceWith[AccountService](_.getAllByCustomerId(c))

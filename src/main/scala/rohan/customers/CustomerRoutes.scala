@@ -1,8 +1,7 @@
 package rohan.customers
 
 import rohan.types.CustomerId
-import zio.ZIO
-import zio.ZLayer
+import zio.*
 import zio.http.*
 import zio.json.*
 import java.util.UUID
@@ -26,4 +25,4 @@ final case class CustomerRoutes(customers: CustomerService):
   ).handleError(e => Response.internalServerError(e.toString))
 
 object CustomerRoutes:
-  val layer = ZLayer.fromFunction(CustomerRoutes.apply)
+  val layer = ZLayer.derive[CustomerRoutes]

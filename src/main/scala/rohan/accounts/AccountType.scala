@@ -23,5 +23,3 @@ object AccountType:
     MappedEncoding[AccountType, String](_.toString)
   given MappedEncoding[String, AccountType] =
     MappedEncoding[String, AccountType](AccountType.fromString)
-
-  // given JsonCodec[AccountType] = DeriveJsonCodec.gen

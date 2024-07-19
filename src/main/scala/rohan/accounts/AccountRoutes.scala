@@ -37,9 +37,8 @@ final case class AccountRoutes(accountService: AccountService):
     Method.PATCH / "accounts" -> handler { (req: Request) =>
       for
         au <- ServerUtils.parseBody[AccountUpdate](req)
-        _ <- accountService.update(
-          au
-        ) // TODO add logs and quill exception handlers  -- .catchAll(c => zio.Console.printLine(c))
+        _  <- accountService.update(au)
+      // TODO add logs and quill exception handlers  -- .catchAll(c => zio.Console.printLine(c))
       yield Response.ok
     },
     Method.DELETE / "accounts" / uuid("accountId") -> handler {

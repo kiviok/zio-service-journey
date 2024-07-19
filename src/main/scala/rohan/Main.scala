@@ -14,6 +14,7 @@ object MainApp extends ZIOAppDefault:
   def run = ZIO
     .serviceWithZIO[ApplicationServer](_.start)
     .provide(
+      Server.default,
       ApplicationServer.layer,
       CustomerRoutes.layer,
       AccountRoutes.layer,

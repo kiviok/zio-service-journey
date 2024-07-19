@@ -32,6 +32,19 @@ case class CustomerServiceLive(quill: Quill.Postgres[SnakeCase]) extends Custome
   override def delete(id: CustomerId): Task[Unit] =
     run(query[Customer].filter(_.id == lift(id)).delete).unit
 
+  override def update(uc: UpdateCustomer) = run(
+    dynamicQuerySchema[Customer]("customers")
+      .filter(_.id == lift(uc.id))
+      .update(
+        setOpt(_.firstName, uc.firstName),
+        setOpt(_.lastName, uc.lastName),
+        setOpt(_.address, uc.address),
+        setOpt(_.email, uc.email),
+        setOpt(_.phone, uc.phone),
+        setOpt(_.passport, uc.passport)
+      )
+  ).unit
+
 object CustomerServiceLive:
   val layer: ZLayer[Postgres[SnakeCase], Nothing, CustomerServiceLive] =
     ZLayer.derive[CustomerServiceLive]
