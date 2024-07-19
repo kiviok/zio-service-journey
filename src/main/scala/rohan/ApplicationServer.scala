@@ -7,15 +7,14 @@ import rohan.accounts.AccountRoutes
 
 final case class ApplicationServer(
     customerRoutes: CustomerRoutes,
-    accountRoutes: AccountRoutes,
-    migration: FlywayMigration
+    accountRoutes: AccountRoutes
 ):
   private val serverRoutes = customerRoutes.all ++ accountRoutes.all
 
-  def start: Task[Unit] =
+  def start: ZIO[Server & FlywayMigration, Throwable, Unit] =
     for
-      _ <- migration.cleanMigrate
-      _ <- Server.serve(serverRoutes).provide(Server.default)
+      _ <- FlywayMigration.cleanMigrate
+      _ <- Server.serve(serverRoutes)
     yield ()
 
 object ApplicationServer:
@@ -28,6 +27,5 @@ object ApplicationServer:
       for
         cr <- ZIO.service[CustomerRoutes]
         ar <- ZIO.service[AccountRoutes]
-        m  <- ZIO.service[FlywayMigration]
-      yield ApplicationServer(cr, ar, m)
+      yield ApplicationServer(cr, ar)
     }

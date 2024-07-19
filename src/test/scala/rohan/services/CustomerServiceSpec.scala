@@ -5,10 +5,11 @@ import zio.*
 import rohan.customers.*
 import io.getquill.jdbczio.Quill
 import io.getquill.SnakeCase
-import rohan.customers.CustomerService.create
+import rohan.FlywayMigration
 
 object CustomerServiceSpec extends ZIOSpecDefault:
   override def spec: Spec[Environment & (TestEnvironment & Scope), Any] =
+
     val cc = CreateCustomer(
       firstName = "Sara",
       lastName = "Lara",
@@ -17,8 +18,9 @@ object CustomerServiceSpec extends ZIOSpecDefault:
       phone = "+85438222",
       passport = 32341342
     )
+
     suite("CustomerService operations")(
-      test("return true for added new customer") {
+      test("return true for added new customer and findById") {
         for
           customerId <- CustomerService.create(cc)
           inserted   <- CustomerService.getById(customerId)
@@ -26,10 +28,37 @@ object CustomerServiceSpec extends ZIOSpecDefault:
       },
       test("return true if find customer by passport")(
         for
-          cuustomerId        <- CustomerService.create(cc)
+          _                  <- CustomerService.create(cc)
           customerByPassport <- CustomerService.getByPassport(cc.passport)
-          _ <- Console.printLine(s"${customerByPassport.get.passport} == ${cc.passport}")
         yield assertTrue(customerByPassport.get.passport == cc.passport)
+      ),
+      test("return true if getAll customers wokrs")(
+        for customers <- CustomerService.getAll
+        yield assertTrue(customers.nonEmpty == true)
+      ),
+      test("return true if update customer")(
+        for
+          customer <- CustomerService.getByPassport(32341342)
+          _ <- CustomerService.update(
+            UpdateCustomer(
+              customer.get.id,
+              firstName = Some(customer.get.firstName + "Updated"),
+              None,
+              None,
+              None,
+              None,
+              None
+            )
+          )
+          updated <- CustomerService.getById(customer.get.id)
+        yield assertTrue(updated.get.firstName.contains("Updated"))
+      ),
+      test("return true if delete customer")(
+        for
+          list        <- CustomerService.getAll
+          _           <- CustomerService.delete(list.head.id)
+          listWithout <- CustomerService.getAll
+        yield assertTrue(listWithout.contains(list.head) == false)
       )
     ).provide(
       CustomerServiceLive.layer,
