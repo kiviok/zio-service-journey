@@ -9,8 +9,14 @@ import io.getquill.SnakeCase
 import customers.*
 import rohan.accounts.AccountRoutes
 import rohan.accounts.AccountServiceLive
+import zio.config.typesafe.TypesafeConfigProvider
+import rohan.config.MigrationConfig
 
 object MainApp extends ZIOAppDefault:
+
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Any] =
+    Runtime.setConfigProvider(TypesafeConfigProvider.fromResourcePath())
+
   def run = ZIO
     .serviceWithZIO[ApplicationServer](_.start)
     .provide(
@@ -20,6 +26,7 @@ object MainApp extends ZIOAppDefault:
       AccountRoutes.layer,
       CustomerServiceLive.layer,
       AccountServiceLive.layer,
+      MigrationConfig.layer,
       FlywayMigration.layer,
       Quill.Postgres.fromNamingStrategy(SnakeCase),
       Quill.DataSource.fromPrefix("datasource")
